@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Carrito de Compras</title>
+  <style>
+    .carrito-container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+  
+    .carrito-item {
+      margin-bottom: 10px;
+      padding: 10px;
+      background-color: #fff;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .carrito-item h3 {
+      margin: 0;
+      font-size: 18px;
+    }
+    
+    .carrito-item p {
+      margin: 0;
+      font-size: 14px;
+    }
+    
+    .quantity-container {
+      display: flex;
+      align-items: center;
+    }
+    
+    .quantity-btn {
+      display: inline-block;
+      padding: 4px 8px;
+      background-color: #337ab7;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    
+    .quantity {
+      margin: 0 10px;
+    }
+    
+    .empty-cart-btn {
+      display: block;
+      margin-top: 10px;
+      padding: 8px 16px;
+      background-color: #dc3545;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+  <div class="carrito-container">
+    <h1>Carrito de Compras</h1>
+  
+    <div id="carrito-content"></div>
+    
+    <p id="total-items"></p>
+    <p id="total-cost"></p>
+    
+    <button id="empty-cart-btn" class="empty-cart-btn">Vaciar Carrito</button>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var carritoContent = document.getElementById('carrito-content');
+      var emptyCartBtn = document.getElementById('empty-cart-btn');
+      var totalItems = document.getElementById('total-items');
+      var totalCost = document.getElementById('total-cost');
+
+      // Obtén la lista de productos del almacenamiento local
+      var productList = JSON.parse(localStorage.getItem('carritoProductos')) || [];
+
+      // Crea el HTML para mostrar la lista de productos en el carrito
+      function renderCarrito() {
+        carritoContent.innerHTML = '';
+
+        productList.forEach(function(product, index) {
+          var carritoItem = document.createElement('div');
+          carritoItem.classList.add('carrito-item');
+
+          var productName = document.createElement('h3');
+          productName.textContent = product.name;
+
+          var productPrice = document.createElement('p');
+          productPrice.textContent = 'Precio: $' + product.price;
+
+          var quantityContainer = document.createElement('div');
+          quantityContainer.classList.add('quantity-container');
+
+          var decreaseBtn = document.createElement('button');
+          decreaseBtn.classList.add('quantity-btn', 'decrease');
+          decreaseBtn.textContent = '-';
+          decreaseBtn.setAttribute('data-index', index);
+          decreaseBtn.addEventListener('click', function() {
+            changeQuantity(index, 'decrease');
+          });
+
+          var quantity = document.createElement('span');
+          quantity.classList.add('quantity');
+          quantity.textContent = product.quantity;
+
+          var increaseBtn = document.createElement('button');
+          increaseBtn.classList.add('quantity-btn', 'increase');
+          increaseBtn.textContent = '+';
+          increaseBtn.setAttribute('data-index', index);
+          increaseBtn.addEventListener('click', function() {
+            changeQuantity(index, 'increase');
+          });
+
+          quantityContainer.appendChild(decreaseBtn);
+          quantityContainer.appendChild(quantity);
+          quantityContainer.appendChild(increaseBtn);
+
+          carritoItem.appendChild(productName);
+          carritoItem.appendChild(productPrice);
+          carritoItem.appendChild(quantityContainer);
+
+          carritoContent.appendChild(carritoItem);
+        });
+        
+        updateTotalItems();
+        updateTotalCost();
+      }
+
+      // Actualiza la lista de productos en el almacenamiento local
+      function updateCarrito() {
+        localStorage.setItem('carritoProductos', JSON.stringify(productList));
+      }
+      
+      // Actualiza el total de todos los productos en el carrito
+      function updateTotalItems() {
+        var total = productList.reduce(function(acc, curr) {
+          return acc + curr.quantity;
+        }, 0);
+        
+        totalItems.textContent = 'Total de productos: ' + total;
+      }
+      
+      // Actualiza el costo total de los productos en el carrito
+      function updateTotalCost() {
+        var total = productList.reduce(function(acc, curr) {
+          return acc + (curr.price * curr.quantity);
+        }, 0);
+        
+        totalCost.textContent = 'Costo total: $' + total;
+      }
+
+      // Aumentar o disminuir la cantidad de un producto
+      function changeQuantity(index, action) {
+        var product = productList[index];
+
+        if (product) {
+          if (action === 'increase') {
+            if (product.quantity < 5) {
+              product.quantity++;
+            } else {
+              alert('Se ha excedido el límite por producto');
+            }
+          } else if (action === 'decrease') {
+            if (product.quantity > 0) {
+              product.quantity--;
+            }
+          }
+
+          renderCarrito();
+          updateCarrito();
+        }
+      }
+
+      // Vaciar el carrito
+      function emptyCart() {
+        productList = [];
+        localStorage.removeItem('carritoProductos');
+        renderCarrito();
+      }
+
+      // Event listener para el botón de vaciar carrito
+      emptyCartBtn.addEventListener('click', function() {
+        emptyCart();
+      });
+
+      // Renderizar el carrito inicialmente
+      renderCarrito();
+    });
+  </script>
+</body>
+</html>
