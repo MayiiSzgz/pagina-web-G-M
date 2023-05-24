@@ -12,19 +12,22 @@ if (isset($data->product_id) && isset($data->quantity_purchased)) {
   $quantity_purchased = $data->quantity_purchased;
 
   // Realizar la actualización del stock en la base de datos
-  $sql = "UPDATE productos SET stock = stock - :quantity WHERE id = :id";
-  $stmt = $pdo->prepare($sql);
-  $stmt->bindParam(':quantity', $quantity_purchased, PDO::PARAM_INT);
-  $stmt->bindParam(':id', $product_id, PDO::PARAM_INT);
-  $stmt->execute();
+  $sql = "UPDATE productos SET stock = stock - $quantity_purchased WHERE id = $product_id";
+  $result = mysqli_query($conn, $sql);
 
-  // Realizar operaciones adicionales si es necesario
-
-  // Enviar una respuesta al cliente
-  $response = [
-    'success' => true,
-    'message' => 'Stock actualizado en la base de datos para el producto ID ' . $product_id
-  ];
+  if ($result) {
+    // Operación exitosa
+    $response = [
+      'success' => true,
+      'message' => 'Stock actualizado en la base de datos para el producto ID ' . $product_id
+    ];
+  } else {
+    // Error en la operación
+    $response = [
+      'success' => false,
+      'message' => 'Error al actualizar el stock en la base de datos'
+    ];
+  }
 } else {
   // En caso de que falten datos
   $response = [
@@ -34,5 +37,9 @@ if (isset($data->product_id) && isset($data->quantity_purchased)) {
 }
 
 // Enviar la respuesta como un objeto JSON
+header('Content-Type: application/json');
 echo json_encode($response);
+
+// Cerrar la conexión con la base de datos
+mysqli_close($conn);
 ?>

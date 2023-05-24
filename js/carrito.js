@@ -15,9 +15,9 @@ document.addEventListener('DOMContentLoaded', function() {
     function addToCart(product) {
         var productName = product.getElementsByClassName('product__title')[0].textContent; // Obtener el nombre del producto
         var productPrice = parseFloat(product.getElementsByClassName('product__price')[0].textContent.replace('$', '')); // Obtener el precio del producto
-        var stock = parseInt(product.dataset.stock); // Obtener el stock disponible del producto
+        var stock = parseInt(product.dataset.stock);
         var poid = parseInt(product.dataset.id);
-        productList.push({ name: productName, quantity: 1, price: productPrice, stock: stock, pid : poid });
+        productList.push({ name: productName, quantity: 1, price: productPrice, stock: stock, id : poid });
         updateCarritoBtn();
         localStorage.setItem('carritoProductos', JSON.stringify(productList));
         alert('Producto agregado al carrito: ' + productName + '\nStock disponible: ' + stock + '\n id: ' + poid);

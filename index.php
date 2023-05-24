@@ -21,7 +21,7 @@
                         <li class="menu__item"><a href="index.html" class="menu__link">Inicio</a></li>
                         <li class="menu__item"><a href="acerca.html" class="menu__link">Acerca de</a></li>
                         <li class="menu__item"><a href="" class="menu__link">Opciones</a></li>
-                        <li class="menu__item"><a href="tienda.html" class="menu__link">Tienda</a></li>
+                        <li class="menu__item"><a href="tienda.php" class="menu__link">Tienda</a></li>
                         <li class="menu__item"><a href="contact.html" class="menu__link">Contacto</a></li>
                     </ul>
                 </nav>

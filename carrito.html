@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.2/html2canvas.min.js"></script>
   <title>Carrito de Compras</title>
   <style>
         .carrito-container {
@@ -111,6 +112,10 @@
           var stockAvailable = document.createElement('p');
           stockAvailable.textContent = 'Stock disponible: ' + product.stock;
 
+          //id producto
+          var idProduct = document.createElement('p');
+          idProduct.textContent = 'Id: ' + product.id;
+
           var quantityContainer = document.createElement('div');
           quantityContainer.classList.add('quantity-container');
 
@@ -149,6 +154,7 @@
           carritoItem.appendChild(productName);
           carritoItem.appendChild(productPrice);
           carritoItem.appendChild(stockAvailable);
+          carritoItem.appendChild(idProduct)
           carritoItem.appendChild(quantityContainer);
           carritoItem.appendChild(removeBtn);
 
@@ -253,23 +259,46 @@
         });
         ticketContent += 'Total: $' + totalCost.textContent.substr(13);
 
-        // Aquí puedes mostrar el ticket en una ventana emergente, guardarlo como un archivo PDF, enviarlo por correo electrónico, etc.
-        console.log(ticketContent);
+          // Crear un enlace para descargar el ticket
+          var downloadLink = document.createElement('a');
+          downloadLink.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(ticketContent);
+          downloadLink.download = 'ticket_compra.txt';
+          downloadLink.style.display = 'none';
+          document.body.appendChild(downloadLink);
 
+          // Simular el clic en el enlace para iniciar la descarga
+          downloadLink.click();
+
+          // Eliminar el enlace después de la descarga
+          document.body.removeChild(downloadLink);
         // Vacía el carrito después de la compra
         emptyCart();
       });
+      //crea el ticket de compra y lo descarga
+      
 
-      // Realiza la actualización del stock en la base de datos utilizando AJAX y PHP
       function actualizarStockEnBD(productId, quantityPurchased) {
+        var data = {
+          product_id: productId,
+          quantity_purchased: quantityPurchased
+        };
+
         var xhr = new XMLHttpRequest();
         xhr.open('POST', 'actualizar_stock.php', true);
-        xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
-        xhr.onload = function() {
-          // Operaciones adicionales después de actualizar el stock en la base de datos
-          console.log('Stock actualizado en la base de datos para el producto ID ' + productId);
-        };
-        xhr.send('product_id=' + productId + '&quantity_purchased=' + quantityPurchased);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(data));
+
+        xhr.onreadystatechange = function() {
+          if (xhr.readyState === 4 && xhr.status === 200) {
+            var response = JSON.parse(xhr.responseText);
+
+            if (response.success) {
+              console.log(response.message);
+            } else {
+              console.log(response.message);
+            }
+          }
+        }
       }
     });
   </script>
