@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Obtener Stock</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+  <label for="producto">Nombre del producto:</label>
+  <input type="text" id="producto">
+  <button onclick="obtenerStock()">Obtener Stock</button>
+  <div id="resultado"></div>
+
+  <script>
+    function obtenerStock() {
+      var producto = document.getElementById('producto').value;
+
+      $.ajax({
+        url: 'verificar_stock.php',
+        type: 'GET',
+        data: { id: producto },
+        dataType: 'json',
+        success: function(response) {
+          var stock = response.stock_disponible;
+          document.getElementById('resultado').innerHTML = 'Stock Disponible: ' + stock;
+        },
+        error: function(xhr, status, error) {
+          console.error(xhr.responseText);
+        }
+      });
+    }
+  </script>
+</body>
+</html>

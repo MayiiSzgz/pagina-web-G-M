@@ -107,48 +107,49 @@
     <main class="main">
         <div class="container">
             <h2 class="main-title">Nuevos articulos para ti</h2>
-                <section class="container-products">
-                    <div class="product">
-                        <img src="img/1 (2).jpg" alt="" class="product__img">
-                        <div class="product_description">
-                            <h3 class="product__title">Caja Aniversario</h3>
-                            <span class="product__price">$700</span>
-                        </div>
-                        <i class="product__icon fa-solid fa-cart-plus"></i> 
-                    </div>
+            <section class="container-products">
+            <?php
+                // Incluir el archivo de conexión a la base de datos
+                require_once 'db.php';
 
-                    <div class="product">
-                        <img src="img/2.jpg" alt="" class="product__img">
-                        <div class="product_description">
-                            <h3 class="product__title">Caja cumpleaños</h3>
-                            <span class="product__price">$1100</span>
-                        </div>
-                        <i class="product__icon fa-solid fa-cart-plus"></i> 
-                    </div>
+                // Obtener los productos con stock disponible
+                $query = "SELECT * FROM productos WHERE stock > 0";
+                $result = mysqli_query($conn, $query);
 
-                    <div class="product">
-                        <img src="img/3.jpg" alt="" class="product__img">
-                        <div class="product_description">
-                            <h3 class="product__title">Caja fotos</h3>
-                            <span class="product__price">$900</span>
-                        </div>
-                        <i class="product__icon fa-solid fa-cart-plus"></i> 
-                    </div>
+                if (!$result) {
+                    die('Error al obtener los productos: ' . mysqli_error($conn));
+                }
 
-                    <div class="product">
-                        <img src="img/4.jpg" alt="" class="product__img">
-                        <div class="product_description">
-                            <h3 class="product__title">Caja Loveflix</h3>
-                            <span class="product__price">$900</span>
-                        </div>
-                        <i class="product__icon fa-solid fa-cart-plus"></i> 
-                    </div>
+                // Mostrar la cantidad de productos disponibles y su descripción
+                $count = mysqli_num_rows($result);
+                echo "<h2>Productos disponibles</h2>
+                <br>
+                <br>
+                <br>
+                <p>Actualmente tenemos " . $count . " productos disponibles.</p>
+                <br>";
 
-                
-                    
-                  
-                    
+                if ($count > 0) {
+                    while ($row = mysqli_fetch_assoc($result)) {
+                        echo "<div class='product' data-id='" . $row['id'] . "' data-stock='" . $row['stock'] . "'>";
+                        echo "<img src='img/" . $row['imagen'] . "' alt='' class='product__img'>";
+                        echo "<div class='product_description'>";
+                        echo "<h3 class='product__title'>" . $row['nombre'] . "</h3>";
+                        echo "<span class='product__price'>$" . $row['precio'] . "</span>";
+                        echo "</div>";
+                        echo "<i class='product__icon fa-solid fa-cart-plus'></i>";
+                        echo "</div>";
+                    }
+                }else {
+                    echo "<p>No hay productos disponibles en este momento.</p>";
+                }
+
+                // Cerrar la conexión a la base de datos
+                mysqli_close($conn);
+                ?>
+
                 </section>
+                
 
                 <div class="container-slider__opinion">
                     <h2 class="section__title2">Opiniones</h2>
@@ -263,78 +264,8 @@
 
     <script src="js/slider.js"></script>
     <script src="js/slider2.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          var carritoCount = document.getElementById('carrito-count');
-          var itemCount = localStorage.getItem('carritoItemCount') || 0;
-          carritoCount.textContent = itemCount;
-      
-          var buyButtons = document.querySelectorAll('.btn-shop');
-          buyButtons.forEach(function(button) {
-            button.addEventListener('click', function() {
-              itemCount++;
-              carritoCount.textContent = itemCount;
-              localStorage.setItem('carritoItemCount', itemCount);
-              alert('¡Producto agregado al carrito!');
-            });
-          });
-        });
-      </script>
-
-      <!-- Agrega esto después del código existente -->
-      <script>
-        document.addEventListener('DOMContentLoaded', function() {
-          var carritoBtn = document.getElementById('carrito-btn');
-          var btnShop = document.getElementsByClassName('btn-shop');
-          var productIcons = document.getElementsByClassName('product__icon');
-          var productList = JSON.parse(localStorage.getItem('carritoProductos')) || [];
-          
-          function updateCarritoBtn() {
-            var totalItems = productList.reduce(function(acc, curr) {
-              return acc + (curr.quantity || 0);
-            }, 0);
-            
-            carritoBtn.textContent = 'Carrito ' + totalItems;
-          }
-          
-          function addToCart(product) {
-            var existingProduct = productList.find(function(item) {
-              return item.name === product.name;
-            });
-            
-            if (existingProduct) {
-              existingProduct.quantity++;
-            } else {
-              productList.push({ name: product.name, quantity: 1 });
-            }
-            
-            updateCarritoBtn();
-            localStorage.setItem('carritoProductos', JSON.stringify(productList));
-            alert('Producto agregado al carrito: ' + product.name);
-          }
-          
-          Array.from(btnShop).forEach(function(button) {
-            button.addEventListener('click', function(e) {
-              e.preventDefault();
-              var product = {
-                name: this.parentNode.querySelector('.slider__title').textContent
-              };
-              addToCart(product);
-            });
-          });
-          
-          Array.from(productIcons).forEach(function(icon) {
-            icon.addEventListener('click', function() {
-              var product = {
-                name: this.parentNode.querySelector('.product__title').textContent
-              };
-              addToCart(product);
-            });
-          });
-          
-          updateCarritoBtn();
-        });
-      </script>
+    //carrito.js
+    <script src="js/carrito.js"></script>
   
 
   

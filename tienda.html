@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tienda</title>
+  <style>
+    .form-container {
+      max-width: 400px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    
+    .form-container h2 {
+      margin-top: 0;
+    }
+    
+    .form-container input,
+    .form-container textarea {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+    
+    .form-container select {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+    }
+    
+    .form-container button {
+      display: block;
+      width: 100%;
+      padding: 8px;
+      background-color: #337ab7;
+      color: #fff;
+      border: none;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="form-container">
+    <h2>Agregar Producto</h2>
+    
+    <form action="agregar_producto.php" method="POST" enctype="multipart/form-data">
+      <label for="nombre">Nombre:</label>
+      <input type="text" name="nombre" id="nombre" required>
+      
+      <label for="descripcion">Descripcion:</label>
+      <textarea name="descripcion" id="descripcion" required></textarea>
+      
+      <label for="precio">Precio:</label>
+      <input type="number" name="precio" id="precio" step="0.01" required>
+      
+      <label for="stock">Stock:</label>
+      <input type="number" name="stock" id="stock" required>
+      
+      <label for="categoria">Categoria:</label>
+      <select name="categoria" id="categoria" required>
+        <option value="1">Categoria 1</option>
+        <option value="2">Categoria 2</option>
+        <option value="3">Categoria 3</option>
+        <!-- Agrega más opciones según tus necesidades -->
+      </select>
+      
+      <label for="imagen">Imagen:</label>
+      <input type="file" name="imagen" id="imagen" accept="image/*" required>
+      
+      <button type="submit">Agregar Producto</button>
+    </form>
+  </div>
+</body>
+</html>
