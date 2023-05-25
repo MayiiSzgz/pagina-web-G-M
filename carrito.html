@@ -259,6 +259,18 @@
         });
         ticketContent += 'Total: $' + totalCost.textContent.substr(13);
 
+                // Guardar el ticket en la base de datos mediante una petición AJAX
+                var xhr = new XMLHttpRequest();
+                xhr.open('POST', 'guardar_ticket.php', true);
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.onreadystatechange = function() {
+                  if (xhr.readyState === 4 && xhr.status === 200) {
+                    console.log(xhr.responseText);
+                  }
+                };
+                xhr.send('ticket_data=' + encodeURIComponent(ticketContent));
+
+
           // Crear un enlace para descargar el ticket
           var downloadLink = document.createElement('a');
           downloadLink.href = 'data:text/plain;charset=utf-8,' + encodeURIComponent(ticketContent);
